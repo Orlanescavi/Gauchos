@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte intéractive</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-image: url("images/espace.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 100%;
+    }
+</style>
+<DIV id="area" style="width:100% ; height:100vh; "> </DIV> 
+<nav class="menu">
+    <ul>
+        <a href="couteau.html"><li>Couteau</a></li>
+        <a href="lasso.html"><li>Lasso</a></li>
+        <a href="boleadoras.html"><li>Boleadoras</a></li>
+        <a href="index_en.html"><li>Anglais</a></li>
+    </ul>
+</nav>
+<script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/ColladaLoader.js"></script>
+ <script>
+
+    // variables nécessairement globales aux 2 fonctions suivantes
+    var renderer, scene, camera, cube, instantCourant ;
+    var mat, mat1, mat2, fg,clickInfo=[]; ;
+    
+    // Fonction init() pour créer la scene,
+    // 		animate() pour l'animer (elle s'appelle récursivement)
+      
+    init() ; 
+    animate() ; 
+
+      
+    function init() {
+        fg = document.getElementById("area") ;
+        console.log("fen:" + fg.offsetWidth + " "+ fg.offsetHeight ) ; 
+        
+   // Création et placement de la caméra.
+   camera = new THREE.PerspectiveCamera(75, fg.offsetWidth/fg.offsetHeight, 0.1, 10000);
+   camera.position.z = 900;
+        
+   // Instanciation du moteur de rendu WebGL.
+   renderer = new THREE.WebGLRenderer();
+         // Le moteur est de la même taille que la fenetre.
+   renderer.setSize(fg.offsetWidth, fg.offsetHeight);
+   // on associe la fenetre de rendu à la fenetre
+         fg.appendChild(renderer.domElement);
+         // Contrôles de la caméra orbit control
+       controls = new THREE.OrbitControls(camera,renderer.domElement);
+   // Création de la scene qui contiendra les objets.
+   scene = new THREE.Scene();
+         
+   var texture = new THREE.ImageUtils.loadTexture('images/carte 4k.jpg' );
+           texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+           texture.repeat.set( 1, 1 );
+  
+         mat1 = new THREE.MeshBasicMaterial( 
+            {
+                map:texture,
+                specular:'#ff0000',
+                shininess:10000000
+            } ) ;	
+    
+    geom = new THREE.SphereGeometry(400,30,30) ; 
+    sph  = new THREE.Mesh(geom,mat1);
+    scene.add(sph);
+
+        var texture2 = new THREE.ImageUtils.loadTexture('images/carte 4k.jpg');
+        texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping; 
+        texture2.repeat.set( 1, 1 );
+        
+        mat2 = new THREE.MeshBasicMaterial(
+            {
+                map:texture2,
+                color:'#ffffff', 
+                specular:'#ffffff',
+                shininess:1000000,
+            }
+  )	;
+  mat = mat1 ; 
+    
+        lumiere2 = new THREE.DirectionalLight(0xffffff);
+        lumiere2.position.set(0, 50, 100);
+        scene.add(lumiere2);
+    }
+        
+// Fonction animate
+function animate() {
+     sph.rotation.y += 0.005;
+ renderer.render(scene, camera);
+     requestAnimationFrame(function(){ animate(); });
+};
+              
+    </script>
+</body>
+</html>

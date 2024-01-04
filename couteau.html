@@ -1,0 +1,177 @@
+<!DOCTYPE HTML> 
+<html>
+ <head>
+   <title>Les Gauchos | Couteau</title>
+   <META content="text/html; charset=UTF-8;" http-equiv="Content-Type">
+ </head>
+ <body>
+    <DIV id="area" style="width:30vw ; height:80vh ; " >
+        <div id="center_container"></div>
+    </DIV>
+    <style>
+
+		*{
+		margin: 0;
+		padding: 0;
+		}
+		
+		body{
+        overflow-x: hidden;
+        background-color: #777777;
+		height : 700%;
+		width: 100%;
+        }
+
+        #center_container{
+        width: 65vw;
+        height: 80vh;
+        justify-content: flex-end;
+        align-items: flex-end;
+        }
+
+		h1{
+		color: rgb(255, 255, 255);
+		text-align: center;
+		font-family: Arial, Helvetica, sans-serif;
+		}
+
+		p{
+		text-align: justify;
+    	margin-left: 222px;
+    	color: orange;
+    	font-family: Arial, Helvetica, sans-serif;
+    	font-size: small;
+    	width: 828px;
+    	margin-top: 2%;
+    	margin-bottom: 2%;
+		}
+
+		.position_text{
+		display: flex;
+		justify-content: center;
+		}
+
+    </style>
+
+   <script src="js/three.min.js"></script>
+   <script src="js/OrbitControls.js"></script>
+   <script src="js/ColladaLoader.js"></script>
+<script>
+		// variables nécessairement globales aux 2 fonctions suivantes
+		var renderer, scene, camera, cube, instantCourant, lame;
+		var mat, mat1, mat2, fg,clickInfo=[]; ;
+		
+		// Fonction init() pour créer la scene,
+		// 		animate() pour l'animer (elle s'appelle récursivement)
+
+		  
+		function init() {
+			fg = document.getElementById("center_container") ;
+			console.log("fen:" + fg.offsetWidth + " "+ fg.offsetHeight ) ; 
+			
+       // Création et placement de la caméra.
+       camera = new THREE.PerspectiveCamera(75, fg.offsetWidth/fg.offsetHeight, 0.1, 10000);
+       camera.position.z = 5000;
+	   camera.position.y = -1000;
+	   camera.position.x = -1500;
+       // Instanciation du moteur de rendu WebGL.
+       renderer = new THREE.WebGLRenderer();
+		// couleur du fond 
+       renderer.setClearColorHex(0x777777, 1);
+		// Le moteur est de la même taille que la fenetre.
+       renderer.setSize(1400, 900);
+       // on associe la fenetre de rendu à la fenetre
+		center_container.appendChild(renderer.domElement);  
+		// Contrôles de la caméra orbit control
+       controls = new THREE.OrbitControls(camera,renderer.domElement);	
+       // Création de la scene qui contiendra les objets.
+       scene = new THREE.Scene();
+
+
+	   var texture = new THREE.ImageUtils.loadTexture('images/metal.jpg');
+           texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+           texture.repeat.set( 1, 1 );
+  
+         mat1 = new THREE.MeshBasicMaterial( 
+            {
+                map:texture,
+                specular:'#ff0000',
+                shininess:10000000,
+            } ) ;
+
+		
+		var texture2 = new THREE.ImageUtils.loadTexture('images/bois.jpg');
+		texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping; 
+		texture2.repeat.set( 1, 1 );
+			
+		mat2 = new THREE.MeshBasicMaterial(
+			{
+				map:texture2,
+				color:'#ffffff', 
+				specular:'#ffffff',
+				shininess:1000000,
+			}
+	  )	;
+
+	  var loader = new THREE.ColladaLoader();
+        loader.options.convertUpAxis = true;
+        loader.load('couteau.DAE', function ( collada ) {
+		dae = collada.scene;
+		lame = dae.getObjectByName( "lame", true);
+        manche = dae.getObjectByName( "manche", true);
+		lame.add(manche);
+ 		lame.scale.x = lame.scale.y = lame.scale.z = 10.0;
+		manche.scale.x = manche.scale.y = manche.scale.z = 1.0;
+ 		manche.position.set(-390,-26,0,0);
+		lame.rotation.x = 1.57;
+			
+ 		dae.updateMatrix();
+ 		scene.add(lame);
+});
+
+
+	  mat = mat1 ; 
+		
+			lumiere1 = new THREE.DirectionalLight(0xffffff);
+			lumiere1.position.set(0, 100, 100);
+			scene.add(lumiere1);
+	  		
+			lumiere2 = new THREE.DirectionalLight(0xffffff);
+			lumiere2.position.set(0, 100, -200);
+			scene.add(lumiere2);
+	
+		}
+			
+	// faire bouger le couteau
+    function animate() {
+		//lame.rotation.z += 0.01;
+		renderer.render(scene, camera);
+		requestAnimationFrame(function(){ animate(); });
+    };
+
+	init() ; 
+	animate() ;
+
+</script>
+	<div class=position_text>
+		<div class="center_text">
+			<h1>Couteau du Gaucho</h1>
+			<p>Il sert à diverses tâches telles que la coupe de la viande, la préparation
+				de la nourriture, la coupe de cuir et d'autres matériaux, et même comme arme en
+				cas de besoin.Le couteau des gauchos est un outil multifonctionnel qui peut être
+				utilisé dans de nombreuses situations de la vie quotidienne des gauchos. Il est
+				également considéré comme un symbole de l'identité culturelle gaucha et est
+				souvent porté comme un accessoire de mode.
+				<br><br>
+				De plus, le couteau du gaucho est souvent associé à l'honneur et au courage.
+				Dans la culture gauchesca, il est considéré comme un signe de virilité et de
+				force, et les gauchos peuvent même jurer sur leur couteau en signe de serment
+				ou de promesse.
+				<br><br>
+				En résumé, le couteau du gaucho est un symbole important de la culture gauchesca
+				en Amérique du Sud, représentant l'identité, la fierté, la virilité et l'honneur des gauchos.
+			</p>
+		</div>
+	</div>
+</body>
+</html>

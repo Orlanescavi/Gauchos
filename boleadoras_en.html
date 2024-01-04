@@ -1,0 +1,170 @@
+<!DOCTYPE HTML> 
+<html>
+ <head>
+   <title>The Gauchos | Boleadoras</title>
+   <META content="text/html; charset=UTF-8;" http-equiv="Content-Type">
+ </head>
+ <body>
+    <DIV id="area" style="width:30vw ; height:80vh ; " >
+        <div id="center_container"></div>
+    </DIV>
+    <style>
+
+		
+*{
+		margin: 0;
+		padding: 0;
+		}
+		
+		body{
+        overflow-x: hidden;
+        background-color: #777777;
+		height : 700%;
+		width: 100%;
+        }
+
+        #center_container{
+        width: 65vw;
+        height: 80vh;
+        justify-content: flex-end;
+        align-items: flex-end;
+        }
+
+		h1{
+		color: rgb(255, 255, 255);
+		text-align: center;
+		font-family: Arial, Helvetica, sans-serif;
+		}
+
+		p{
+		text-align: justify;
+    	margin-left: 222px;
+    	color: orange;
+    	font-family: Arial, Helvetica, sans-serif;
+    	font-size: small;
+    	width: 828px;
+    	margin-top: 2%;
+    	margin-bottom: 2%;
+		}
+
+		.position_text{
+		display: flex;
+		justify-content: center;
+		}
+
+    </style>
+
+   <script src="js/three.min.js"></script>
+   <script src="js/OrbitControls.js"></script>
+   <script src="js/ColladaLoader.js"></script>
+<script>
+		// variables nécessairement globales aux 2 fonctions suivantes
+		var renderer, scene, camera, cube, instantCourant, boleadoras;
+		var mat, mat1, mat2, fg,clickInfo=[]; ;
+		
+		// Fonction init() pour créer la scene,
+		// 	animate() pour l'animer (elle s'appelle récursivement)
+
+		  
+		function init() {
+			fg = document.getElementById("center_container") ;
+			console.log("fen:" + fg.offsetWidth + " "+ fg.offsetHeight ) ; 
+			
+       // Création et placement de la caméra.
+       camera = new THREE.PerspectiveCamera(75, fg.offsetWidth/fg.offsetHeight, 0.1, 10000);
+	   camera.position.z = 7000;
+       camera.position.x = 5000;
+       camera.position.y = -2300;
+       // Instanciation du moteur de rendu WebGL.
+       renderer = new THREE.WebGLRenderer();
+		// couleur du fond 
+       renderer.setClearColorHex(0x777777, 1);
+		// Le moteur est de la même taille que la fenetre.
+       renderer.setSize(2000, 900);
+       // on associe la fenetre de rendu à la fenetre
+		center_container.appendChild(renderer.domElement);  
+		// Contrôles de la caméra orbit control
+       controls = new THREE.OrbitControls(camera,renderer.domElement);	
+       // Création de la scene qui contiendra les objets.
+       scene = new THREE.Scene();
+
+
+	   var texture = new THREE.ImageUtils.loadTexture('images/metal.jpg');
+           texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+           texture.repeat.set( 1, 1 );
+  
+         mat1 = new THREE.MeshBasicMaterial( 
+            {
+                map:texture,
+                specular:'#ff0000',
+                shininess:100,
+            } ) ;
+
+		
+		var texture2 = new THREE.ImageUtils.loadTexture('images/bois.jpg');
+		texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping; 
+		texture2.repeat.set( 1, 1 );
+			
+		mat2 = new THREE.MeshBasicMaterial(
+			{
+				map:texture2,
+				color:'#ffffff', 
+				specular:'#ffffff',
+				shininess:100,
+			}
+	  )	;
+
+	  var loader = new THREE.ColladaLoader();
+        loader.options.convertUpAxis = true;
+        loader.load('boleadoras.DAE', function ( collada ) {
+		dae = collada.scene;
+		boleadoras = dae.getObjectByName( "boleadoras", true);
+        boleadoras.scale.x = boleadoras.scale.y = boleadoras.scale.z = 10.0;
+		boleadoras.rotation.x = 1.57;	
+ 		dae.updateMatrix();
+ 		scene.add(boleadoras);
+});
+
+
+	  mat = mat1 ; 
+		
+			lumiere1 = new THREE.DirectionalLight(0xffffff);
+			lumiere1.position.set(0, 0, 100);
+			scene.add(lumiere1);
+	  		
+			lumiere2 = new THREE.DirectionalLight(0xffffff);
+			lumiere2.position.set(0, 0, -200);
+			scene.add(lumiere2);
+	
+		}
+			
+	// faire bouger les boleadoras
+    function animate() {
+	renderer.render(scene, camera);
+	requestAnimationFrame(function(){ animate(); });
+    };
+
+	init() ; 
+	animate() ;
+
+</script>
+	<div class="position_text">
+		<div class="center_text">
+			<h1>Boleadoras of the Gaucho</h1>
+			<p>The Boleadoras are used to capture livestock quickly and efficiently. They 
+                can be used while on horseback to catch moving animals, which is harder to
+                do with a lasso. Boleadoras are, like lassos, used in rodeo competitions and
+                in the practice of equestrian sports such as polo and horseback riding. They
+                are made from materials such as leather, nylon, and hemp rope and are often
+                decorated with traditional patterns. They are an important symbol of gaucha
+                cultural identity and are often considered works of art.
+                <br><br>
+                In addition to their practical use for hunting and capturing livestock, the
+                boleadoras have become a symbol of gaucho identity and their traditional way
+                of life. Gauchos have developed unique skills for handling the boleadoras with
+                precision, a skill that has been passed down from generation to generation.
+			</p>
+		</div>
+	</div>
+    </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE HTML> 
+<html>
+ <head>
+   <title>Les Gauchos | Lasso</title>
+   <META content="text/html; charset=UTF-8;" http-equiv="Content-Type">
+ </head>
+ <body>
+    <DIV id="area" style="width:30vw ; height:80vh ; " >
+        <div id="center_container"></div>
+    </DIV>
+    <style>
+
+		
+*{
+		margin: 0;
+		padding: 0;
+		}
+		
+		body{
+        overflow-x: hidden;
+        background-color: #777777;
+		height : 700%;
+		width: 100%;
+        }
+
+        #center_container{
+        width: 65vw;
+        height: 80vh;
+        justify-content: flex-end;
+        align-items: flex-end;
+        }
+
+		h1{
+		color: rgb(255, 255, 255);
+		text-align: center;
+		font-family: Arial, Helvetica, sans-serif;
+		}
+
+		p{
+		text-align: justify;
+    	margin-left: 222px;
+    	color: orange;
+    	font-family: Arial, Helvetica, sans-serif;
+    	font-size: small;
+    	width: 828px;
+    	margin-top: 2%;
+    	margin-bottom: 2%;
+		}
+
+		.position_text{
+		display: flex;
+		justify-content: center;
+		}
+
+    </style>
+
+   <script src="js/three.min.js"></script>
+   <script src="js/OrbitControls.js"></script>
+   <script src="js/ColladaLoader.js"></script>
+<script>
+		// variables nécessairement globales aux 2 fonctions suivantes
+		var renderer, scene, camera, cube, instantCourant, corde;
+		var mat, mat1, mat2, fg,clickInfo=[]; ;
+		
+		// Fonction init() pour créer la scene,
+		// 		animate() pour l'animer (elle s'appelle récursivement)
+		  
+		  
+		function init() {
+			fg = document.getElementById("center_container") ;
+			console.log("fen:" + fg.offsetWidth + " "+ fg.offsetHeight ) ; 
+			
+       // Création et placement de la caméra.
+       camera = new THREE.PerspectiveCamera(75, fg.offsetWidth/fg.offsetHeight, 0.1, 10000);
+       camera.position.z = 2000; 
+	   camera.position.y = -300;
+       // Instanciation du moteur de rendu WebGL.
+       renderer = new THREE.WebGLRenderer();
+		// couleur du fond 
+       renderer.setClearColorHex(0x777777, 1);
+		// Le moteur est de la même taille que la fenetre.
+       renderer.setSize(1400, 700);
+       // on associe la fenetre de rendu à la fenetre
+		center_container.appendChild(renderer.domElement);  
+		// Contrôles de la caméra orbit control
+       controls = new THREE.OrbitControls(camera,renderer.domElement);	
+       // Création de la scene qui contiendra les objets.
+       scene = new THREE.Scene();
+
+
+	   var texture = new THREE.ImageUtils.loadTexture('images/metal.jpg');
+           texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+           texture.repeat.set( 1, 1 );
+  
+         mat1 = new THREE.MeshBasicMaterial( 
+            {
+                map:texture,
+                specular:'#ff0000',
+                shininess:10000000
+            } ) ;
+
+		
+
+		
+		var texture2 = new THREE.ImageUtils.loadTexture('images/metal.jpg');
+		texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping; 
+		texture2.repeat.set( 1, 1 );
+			
+		mat2 = new THREE.MeshBasicMaterial(
+			{
+				map:texture2,
+				color:'#ffffff', 
+				specular:'#ffffff',
+				shininess:1000000
+			}
+	  )	;
+
+	  var loader = new THREE.ColladaLoader();
+        loader.options.convertUpAxis = true;
+        loader.load('lasso.DAE', function ( collada ) {
+		dae = collada.scene;
+		corde = dae.getObjectByName( "corde", true);
+        crochet = dae.getObjectByName( "crochet", true);
+        mur = dae.getObjectByName( "mur", true);
+
+		corde.add(crochet);
+		corde.add(mur);
+ 		corde.scale.x = corde.scale.y = corde.scale.z = 10.0;
+		corde.rotation.y = 1.57;
+ 		dae.position.set(0,0,0,0);
+ 		dae.updateMatrix();
+ 		scene.add(corde);
+});
+
+
+	  mat = mat1 ; 
+		
+			lumiere1 = new THREE.DirectionalLight(0xffffff);
+			lumiere1.position.set(0, -100, 100);
+			scene.add(lumiere1);
+	  		
+			lumiere2 = new THREE.DirectionalLight(0xffffff);
+			lumiere2.position.set(0, -50, -200);
+			scene.add(lumiere2);
+	
+		}
+			
+	// faire bouger le couteau
+    function animate() {
+		//corde.rotation.z += 0.01;
+		//console.log(corde.rotation.z);
+		renderer.render(scene, camera);
+		requestAnimationFrame(function(){ animate(); });
+    };
+
+	init() ; 
+	animate() ; 
+</script>
+	<div class="position_text">
+		<div class="center_text">
+			<h1>Lasso du Gaucho</h1>
+			<p>Le lasso est utilisé par les gauchos pour capturer et contrôler le bétail.est
+				également utilisé dans des compétitions appelées "rodeos", où les gauchos se
+				mesurent dans des épreuves de capture et de maîtrise de bovins. Ces compétitions
+				sont populaires en Amérique latine et aux États-Unis.
+				Le Lasso est un élément important de la culture gauchesca car il était utilisé par
+				les gauchos pour capturer et maîtriser le bétail. Les gauchos utilisaient des techniques
+				spéciales pour lancer le Lasso avec précision et rapidité, ce qui leur permettait de capturer
+				le bétail sans le blesser. Le Lasso est donc un symbole de la technique et de la compétence
+				des gauchos en matière d'équitation et de travail avec les animaux.
+			</p>
+		</div>
+	</div>
+    </body>
+</html>
